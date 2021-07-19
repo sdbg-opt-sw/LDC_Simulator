@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFileDialog
 from PyQt6.QtGui import QPixmap, QImage, QResizeEvent
 from PyQt6.QtCore import Qt
-from ui.main import Ui_MainWindow
+from ui.main_ui import Ui_MainWindow
 import cv2
 import numpy as np
 from pathlib import Path

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'C:\Users\wangp\Codes\GitHub\LDC_Simulator\ui\main.ui'
+# Form implementation generated from reading ui file 'C:\Users\wangp\Codes\GitHub\LDC_Simulator\ui\main_ui.ui'
 #
 # Created by: PyQt6 UI code generator 6.1.0
 #
@@ -180,7 +180,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Lens Distortion Correction Simulator"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Lens Distortion Correction Simulator (v1.0)"))
         self.groupBox_distortion.setTitle(_translate("MainWindow", "Distortion Correction parameters"))
         self.label_k1.setText(_translate("MainWindow", "K1"))
         self.label_p2.setText(_translate("MainWindow", "P2"))
