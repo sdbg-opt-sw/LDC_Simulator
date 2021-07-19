@@ -47,10 +47,15 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
 
         # Setup menu bar item
         self.actionOpen_image.triggered.connect(self.menu_open_image)
+        self.action_Save.triggered.connect(self.menu_save)
+        self.actionSave_As.triggered.connect(self.menu_save_as)
 
         # Image data
         self.img = None  # original
         self.img_undist = None  # un-distortion (modified)
+
+        # Save image data path
+        self.save_path = None
 
         # Distortion coefficients
         self.dist_coeff = DistortionCoefficients()
@@ -83,6 +88,7 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         self.groupBox_distortion.setEnabled(False)
 
         self.action_Save.setEnabled(False)
+        self.actionSave_As.setEnabled(False)
 
     def value_change_k1(self):
         self.dist_coeff.k1 = self.horizontalSlider_k1.value() * self.dist_coeff.step_k1
@@ -138,7 +144,7 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         # Popup open file dialog
         path, _ = QFileDialog.getOpenFileNames(self, 'Open an image', '',
                                                'Images (*.jpg *.jpeg *.png *.bmp);;All Files (*.*)')
-        if path != ('', '') and len(path) != 0:
+        if path:
             filename = Path(path[0])
             try:
                 # Reset all parameters before a new image open
@@ -146,14 +152,16 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
 
                 # Load image data through OpenCV
                 self.img = cv2.imdecode(np.fromfile(filename, dtype=np.uint8), cv2.IMREAD_COLOR)
-
-                # Show image on windows
-                self.show_image(self.img)
-
-                # Enable distortion parameters panel
-                self.groupBox_distortion.setEnabled(True)
             except Exception as e:
                 print(e)
+
+            # Show image on windows
+            self.show_image(self.img)
+
+            # Enable distortion parameters panel
+            self.groupBox_distortion.setEnabled(True)
+            self.action_Save.setEnabled(True)
+            self.actionSave_As.setEnabled(True)
 
     def show_image(self, img: np.ndarray):
         if img is not None:
@@ -184,6 +192,22 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         cam[1, 1] = self.focal_length
 
         return cam
+
+    def save_image(self):
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 98]
+        cv2.imencode('.jpg', self.img_undist, encode_param)[1].tofile(self.save_path)
+
+    def menu_save(self):
+        if self.save_path is None:
+            self.menu_save_as()
+        else:
+            self.save_image()
+
+    def menu_save_as(self):
+        path, _ = QFileDialog.getSaveFileName(self, 'Save File As', '', 'Jpeg (*.jpg)')
+        if path:
+            self.save_path = path
+            self.save_image()
 
     # FIXME
     # def resizeEvent(self, event: QResizeEvent):
