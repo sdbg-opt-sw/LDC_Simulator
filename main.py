@@ -1,11 +1,14 @@
 import sys
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFileDialog
-from PyQt6.QtGui import QPixmap, QImage, QResizeEvent
+from PyQt6.QtGui import QPixmap, QImage, QResizeEvent, QPainter, QPen, QColor
 from PyQt6.QtCore import Qt
 from ui.main_ui import Ui_MainWindow
 import cv2
 import numpy as np
 from pathlib import Path
+import pyperclip
+
+version = 'v1.1'
 
 
 class DistortionCoefficients:
@@ -22,6 +25,9 @@ class DistortionCoefficients:
         self.step_k3 = 1.0e-16
         self.step_p1 = 0.000001
         self.step_p2 = 0.000001
+
+    def __str__(self):
+        return 'K1 = {}, K2 = {}, K3 = {}, P1 = {}, P2 = {}'.format(self.k1, self.k2, self.k3, self.p1, self.p2)
 
     def get_distortion_coefficients(self):
         dist_coeff = np.zeros((5, 1), dtype=np.float64)
@@ -44,11 +50,13 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(LDCSimulatorWindow, self).__init__(parent)
         self.setupUi(self)
+        self.setWindowTitle('{} ({})'.format(self.windowTitle(), version))
 
         # Setup menu bar item
         self.actionOpen_image.triggered.connect(self.menu_open_image)
         self.action_Save.triggered.connect(self.menu_save)
         self.actionSave_As.triggered.connect(self.menu_save_as)
+        self.actionCopy_parameters.triggered.connect(self.menu_copy_parameters)
 
         # Image data
         self.img = None  # original
@@ -62,6 +70,8 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
 
         # Camera focal length for OpenCV
         self.focal_length = 10.0
+
+        self.show_grids = False
 
         # The maximum and minimum value of each slider bars
         self.horizontalSlider_k1.setMaximum(500)
@@ -89,6 +99,13 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
 
         self.action_Save.setEnabled(False)
         self.actionSave_As.setEnabled(False)
+
+        self.checkBox_show_grids.clicked.connect(self.selected_show_grids)
+
+    def selected_show_grids(self):
+        self.show_grids = self.checkBox_show_grids.isChecked()
+        if self.img is not None:
+            self.show_image(self.img)
 
     def value_change_k1(self):
         self.dist_coeff.k1 = self.horizontalSlider_k1.value() * self.dist_coeff.step_k1
@@ -175,8 +192,25 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
             lh = self.label_image.height()
             lw = self.label_image.width()
 
+            # Create pixmap
+            pixmap = QPixmap.fromImage(q_img).scaled(lw, lh, Qt.AspectRatioMode.KeepAspectRatio)
+
+            if self.show_grids:
+                # Draw grids
+                painter = QPainter(pixmap)
+                pen_color = QColor(255, 0, 0)
+                pen_width = 1
+                div = 4
+
+                pen = QPen(pen_color, pen_width)
+                painter.setPen(pen)
+                for i in range(1, div):
+                    painter.drawLine(0, int(i * pixmap.height() / div), pixmap.width(), int(i * pixmap.height() / div))
+                    painter.drawLine(int(i * pixmap.width() / div), 0, int(i * pixmap.width() / div), pixmap.height())
+                painter.end()
+
             # Show image on QLabel
-            self.label_image.setPixmap(QPixmap.fromImage(q_img).scaled(lw, lh, Qt.AspectRatioMode.KeepAspectRatio))
+            self.label_image.setPixmap(pixmap)
 
     def calculate_undistortion(self, img: np.ndarray):
         height, width, depth = img.shape
@@ -208,6 +242,15 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         if path:
             self.save_path = path
             self.save_image()
+
+    def menu_copy_parameters(self):
+        if self.img is not None:
+            pyperclip.copy('k1 = {} / k2 = {} / k3 = {} / p1 = {} / p2 = {}'.format(
+                self.horizontalSlider_k1.value(),
+                self.horizontalSlider_k2.value(),
+                self.horizontalSlider_k3.value(),
+                self.horizontalSlider_p1.value(),
+                self.horizontalSlider_p2.value()))
 
     # FIXME
     # def resizeEvent(self, event: QResizeEvent):
