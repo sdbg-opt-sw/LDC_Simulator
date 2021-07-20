@@ -10,6 +10,12 @@
     <height>601</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Lens Distortion Correction Simulator</string>
   </property>
@@ -64,8 +70,8 @@
              <property name="horizontalSpacing">
               <number>6</number>
              </property>
-             <item row="1" column="1">
-              <widget class="QSlider" name="horizontalSlider_k2">
+             <item row="4" column="2">
+              <widget class="QSlider" name="horizontalSlider_p2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -77,7 +83,46 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="3" column="2">
+              <widget class="QSlider" name="horizontalSlider_p1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLineEdit" name="lineEdit_k3"/>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_k1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>K1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLineEdit" name="lineEdit_p1"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_p1">
+               <property name="text">
+                <string>P1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
               <widget class="QSlider" name="horizontalSlider_k1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -93,28 +138,8 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_k1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>K1</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_p2">
-               <property name="text">
-                <string>P2</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QSlider" name="horizontalSlider_p1">
+             <item row="1" column="2">
+              <widget class="QSlider" name="horizontalSlider_k2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -126,28 +151,7 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_p1">
-               <property name="text">
-                <string>P1</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_k2">
-               <property name="text">
-                <string>K2</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_k3">
-               <property name="text">
-                <string>K3</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
+             <item row="2" column="2">
               <widget class="QSlider" name="horizontalSlider_k3">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -160,20 +164,14 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
-              <widget class="QSlider" name="horizontalSlider_p2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>1</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_p2">
+               <property name="text">
+                <string>P2</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
+             <item row="0" column="3">
               <widget class="QLineEdit" name="lineEdit_k1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -189,16 +187,24 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2">
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_k3">
+               <property name="text">
+                <string>K3</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
               <widget class="QLineEdit" name="lineEdit_k2"/>
              </item>
-             <item row="2" column="2">
-              <widget class="QLineEdit" name="lineEdit_k3"/>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_k2">
+               <property name="text">
+                <string>K2</string>
+               </property>
+              </widget>
              </item>
-             <item row="3" column="2">
-              <widget class="QLineEdit" name="lineEdit_p1"/>
-             </item>
-             <item row="4" column="2">
+             <item row="4" column="3">
               <widget class="QLineEdit" name="lineEdit_p2"/>
              </item>
             </layout>
@@ -225,13 +231,104 @@
         <property name="title">
          <string>Options</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QCheckBox" name="checkBox_show_grids">
-           <property name="text">
+          <widget class="QGroupBox" name="groupBox_show_grids">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
             <string>Show grids</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_division">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Division</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox_division">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimum">
+                 <number>2</number>
+                </property>
+                <property name="maximum">
+                 <number>20</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QRadioButton" name="radioButton_red">
+                <property name="text">
+                 <string>Red</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_green">
+                <property name="text">
+                 <string>Green</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_blue">
+                <property name="text">
+                 <string>Blue</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

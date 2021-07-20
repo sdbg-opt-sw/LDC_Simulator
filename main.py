@@ -8,7 +8,7 @@ import numpy as np
 from pathlib import Path
 import pyperclip
 
-version = 'v1.2'
+version = 'v1.3'
 
 
 class DistortionCoefficients:
@@ -72,6 +72,8 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         self.focal_length = 10.0
 
         self.show_grids = False
+        self.grid_division = self.spinBox_division.value()
+        self.grid_color = QColor(255, 0, 0)
 
         # The maximum and minimum value of each slider bars
         self.horizontalSlider_k1.setMaximum(500)
@@ -100,47 +102,65 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         self.action_Save.setEnabled(False)
         self.actionSave_As.setEnabled(False)
 
-        self.checkBox_show_grids.clicked.connect(self.selected_show_grids)
+        self.groupBox_show_grids.clicked.connect(self.selected_show_grids)
+        self.spinBox_division.valueChanged.connect(self.change_grid_division)
+        self.radioButton_red.toggled.connect(self.change_grid_color)
+        self.radioButton_green.toggled.connect(self.change_grid_color)
+        self.radioButton_blue.toggled.connect(self.change_grid_color)
         self.label_image.mousePressEvent = self.label_mouse_press
         self.label_image.mouseReleaseEvent = self.label_mouse_release
 
     def label_mouse_press(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.RightButton:
-            self.show_image(self.img, show_org=True)
+            self.show_image(show_org=True)
 
     def label_mouse_release(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.RightButton:
-            self.show_image(self.img)
+            self.show_image()
 
     def selected_show_grids(self):
-        self.show_grids = self.checkBox_show_grids.isChecked()
-        if self.img is not None:
-            self.show_image(self.img)
+        self.show_grids = self.groupBox_show_grids.isChecked()
+        self.show_image()
+
+    def change_grid_division(self):
+        self.grid_division = self.spinBox_division.value()
+        self.show_image()
+
+    def change_grid_color(self):
+        btn = self.sender()
+        if btn.isChecked():
+            if btn.text() == 'Red':
+                self.grid_color = QColor(255, 0, 0)
+            elif btn.text() == 'Green':
+                self.grid_color = QColor(0, 255, 0)
+            elif btn.text() == 'Blue':
+                self.grid_color = QColor(0, 0, 255)
+        self.show_image()
 
     def value_change_k1(self):
         self.dist_coeff.k1 = self.horizontalSlider_k1.value() * self.dist_coeff.step_k1
         self.lineEdit_k1.setText(str(self.horizontalSlider_k1.value()))
-        self.show_image(self.img)
+        self.show_image()
 
     def value_change_k2(self):
         self.dist_coeff.k2 = self.horizontalSlider_k2.value() * self.dist_coeff.step_k2
         self.lineEdit_k2.setText(str(self.horizontalSlider_k2.value()))
-        self.show_image(self.img)
+        self.show_image()
 
     def value_change_k3(self):
         self.dist_coeff.k3 = self.horizontalSlider_k3.value() * self.dist_coeff.step_k3
         self.lineEdit_k3.setText(str(self.horizontalSlider_k3.value()))
-        self.show_image(self.img)
+        self.show_image()
 
     def value_change_p1(self):
         self.dist_coeff.p1 = self.horizontalSlider_p1.value() * self.dist_coeff.step_p1
         self.lineEdit_p1.setText(str(self.horizontalSlider_p1.value()))
-        self.show_image(self.img)
+        self.show_image()
 
     def value_change_p2(self):
         self.dist_coeff.p2 = self.horizontalSlider_p2.value() * self.dist_coeff.step_p2
         self.lineEdit_p2.setText(str(self.horizontalSlider_p2.value()))
-        self.show_image(self.img)
+        self.show_image()
 
     def update_distortion_parameters_ui(self):
         val = int((self.dist_coeff.k1 / self.dist_coeff.step_k1))
@@ -183,14 +203,15 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
                 print(e)
 
             # Show image on windows
-            self.show_image(self.img)
+            self.show_image()
 
             # Enable distortion parameters panel
             self.groupBox_distortion.setEnabled(True)
             self.action_Save.setEnabled(True)
             self.actionSave_As.setEnabled(True)
 
-    def show_image(self, img: np.ndarray, show_org=False):
+    def show_image(self, show_org=False):
+        img = self.img
         if img is not None:
             h, w, d = img.shape
 
@@ -212,9 +233,9 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
             if self.show_grids:
                 # Draw grids
                 painter = QPainter(pixmap)
-                pen_color = QColor(255, 0, 0)
+                pen_color = self.grid_color
                 pen_width = 1
-                div = 4
+                div = self.grid_division
 
                 pen = QPen(pen_color, pen_width)
                 painter.setPen(pen)
@@ -238,7 +259,6 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         cam[1, 2] = height / 2.0
         cam[0, 0] = self.focal_length
         cam[1, 1] = self.focal_length
-
         return cam
 
     def save_image(self):
@@ -268,7 +288,7 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
 
     # FIXME
     # def resizeEvent(self, event: QResizeEvent):
-    #     self.show_image(self.img)
+    #     self.show_image()
 
 
 if __name__ == "__main__":
