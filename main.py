@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QMainWindow, QApplication, QFileDialog
-from PyQt6.QtGui import QPixmap, QImage, QResizeEvent, QPainter, QPen, QColor
+from PyQt6.QtGui import QPixmap, QImage, QResizeEvent, QPainter, QPen, QColor, QMouseEvent
 from PyQt6.QtCore import Qt
 from ui.main_ui import Ui_MainWindow
 import cv2
@@ -8,7 +8,7 @@ import numpy as np
 from pathlib import Path
 import pyperclip
 
-version = 'v1.1'
+version = 'v1.2'
 
 
 class DistortionCoefficients:
@@ -101,6 +101,16 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
         self.actionSave_As.setEnabled(False)
 
         self.checkBox_show_grids.clicked.connect(self.selected_show_grids)
+        self.label_image.mousePressEvent = self.label_mouse_press
+        self.label_image.mouseReleaseEvent = self.label_mouse_release
+
+    def label_mouse_press(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.RightButton:
+            self.show_image(self.img, show_org=True)
+
+    def label_mouse_release(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.RightButton:
+            self.show_image(self.img)
 
     def selected_show_grids(self):
         self.show_grids = self.checkBox_show_grids.isChecked()
@@ -180,15 +190,19 @@ class LDCSimulatorWindow(QMainWindow, Ui_MainWindow):
             self.action_Save.setEnabled(True)
             self.actionSave_As.setEnabled(True)
 
-    def show_image(self, img: np.ndarray):
+    def show_image(self, img: np.ndarray, show_org=False):
         if img is not None:
-            # Calculate OpenCV un-distortion
-            self.calculate_undistortion(img)
-
             h, w, d = img.shape
 
+            if not show_org:
+                # Calculate OpenCV un-distortion
+                self.calculate_undistortion(img)
+                data = self.img_undist.data
+            else:
+                data = self.img.data
+
             # Convert ndarray to QT image
-            q_img = QImage(self.img_undist.data, w, h, w * d, QImage.Format.Format_BGR888)
+            q_img = QImage(data, w, h, w * d, QImage.Format.Format_BGR888)
             lh = self.label_image.height()
             lw = self.label_image.width()
 
